@@ -86,9 +86,7 @@ public class Listeners implements Listener {
                 Location l = event.getBlock().getLocation();
                 ItemStack is = getIS(level, 1);
                 l.getWorld().dropItem(l, is);
-
-               
-sendmessage1(player, is);
+                sendmessage1(player, is);
             }
         }
     }
