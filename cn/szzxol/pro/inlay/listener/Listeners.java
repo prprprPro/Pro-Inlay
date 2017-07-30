@@ -76,7 +76,7 @@ public class Listeners implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-                Player player = event.getPlayer();
+        Player player = event.getPlayer();
         if (event.getBlock().getType() == Material.DIAMOND_ORE && !player.getItemInHand.containsEnchantment(Enchantment.SILK_TOUCH)) {
             Random r = new java.util.Random();
             int index = r.nextInt(100);
