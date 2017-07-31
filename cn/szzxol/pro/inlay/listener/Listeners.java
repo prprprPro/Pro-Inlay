@@ -77,7 +77,7 @@ public class Listeners implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        if (event.getBlock().getType() == Material.DIAMOND_ORE && !player.getItemInHand.containsEnchantment(Enchantment.SILK_TOUCH)) {
+        if (event.getBlock().getType() == Material.DIAMOND_ORE) {
             Random r = new java.util.Random();
             int index = r.nextInt(100);
             int chance = Inlay.instance.getConfig().getInt("Settings.Drop.Chance");
