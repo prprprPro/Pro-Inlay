@@ -1,4 +1,4 @@
-Version: 1.0.0
+Version: 1.0.1
 
 Settings:
     Punch:
@@ -6,6 +6,7 @@ Settings:
     Drop:
         Chance: 20
     DIAMOND:
+        Multiple: 6
         Level:
             1: 1.0
             2: 2.0

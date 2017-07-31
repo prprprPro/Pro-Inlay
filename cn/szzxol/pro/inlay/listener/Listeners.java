@@ -8,7 +8,6 @@ import static cn.szzxol.pro.inlay.jewel.Utils.getJewelLevel;
 import static cn.szzxol.pro.inlay.jewel.Utils.getJewelType;
 import static cn.szzxol.pro.inlay.jewel.Utils.isActive;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -17,6 +16,7 @@ import static org.bukkit.Bukkit.getLogger;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,7 +27,6 @@ import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.json.simple.JSONObject;
 
 /**
  *
@@ -42,7 +41,7 @@ public class Listeners implements Listener {
         ItemStack jw = inv.getItem(1);
         if (jw != null && isActive(jw)) {
             if (canInlay(is)) {
-                Jewel j = new Jewel(getJewelType(jw), getJewelLevel(jw));
+                Jewel j = new Jewel(jw);
                 ItemMeta ItemMeta = is.getItemMeta();
                 List<String> lores = ItemMeta.getLore();
                 ItemMeta.setLore(insertLore(lores, j));
@@ -66,7 +65,6 @@ public class Listeners implements Listener {
                 lores.add(ChatColor.translateAlternateColorCodes('&', "&f&l○ 空镶嵌孔"));
                 ItemMeta.setLore(lores);
                 is.setItemMeta(ItemMeta);
-                is.setDurability((short) 1);
                 event.setResult(is);
             } else {
                 event.setResult(null);
@@ -77,18 +75,25 @@ public class Listeners implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        if (event.getBlock().getType() == Material.DIAMOND_ORE) {
+        if (event.getBlock().getType() == Material.DIAMOND_ORE && !player.getItemInHand().containsEnchantment(Enchantment.SILK_TOUCH)) {
             Random r = new java.util.Random();
             int index = r.nextInt(100);
             int chance = Inlay.instance.getConfig().getInt("Settings.Drop.Chance");
             if (index < chance) {
-                int level = (int) Math.floor(11 - (Math.log(r.nextInt(1023) + 2) / Math.log(2)));
+                int level = getRandom(r, Inlay.instance.getConfig().getInt("Settings.DIAMOND.Multiple"), 0);
                 Location l = event.getBlock().getLocation();
                 ItemStack is = getIS(level, 1);
                 l.getWorld().dropItem(l, is);
                 sendmessage1(player, is);
             }
         }
+    }
+
+    public static int getRandom(Random r, int Multiple, int adjust) {
+        double d = r.nextDouble();
+        long l = (long) (d * (Math.pow(Multiple, 10 + adjust) - Multiple)) + Multiple;
+        int n = (int) Math.floor(Math.log(l) / Math.log(Multiple));
+        return 10 + adjust - n;
     }
 
     public static void sendmessage1(Player player, ItemStack is) {
@@ -165,9 +170,7 @@ public class Listeners implements Listener {
         List<String> l1 = index - 1 > 0 ? lores.subList(0, index) : new LinkedList<>();
         l.addAll(l1);
         List<String> l2 = lores.size() > index + 1 ? lores.subList(index + 1, lores.size()) : new LinkedList<>();
-        l.add(ChatColor.translateAlternateColorCodes('&', "&b&l● " + j.type.getName()));
-        l.add(ChatColor.translateAlternateColorCodes('&', "&f&l     " + j.getLevelSign()));
-        l.add(ChatColor.translateAlternateColorCodes('&', "&f&l     伤害+" + Inlay.instance.getConfig().getDouble("Settings.DIAMOND.Level." + j.Level)));
+        l.addAll(j.lores);
         l.addAll(l2);
         return l;
     }
