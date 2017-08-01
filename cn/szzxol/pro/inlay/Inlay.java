@@ -1,6 +1,7 @@
 package cn.szzxol.pro.inlay;
 
-import static cn.szzxol.pro.inlay.jewel.Jewel.getLevelSign;
+import cn.szzxol.pro.inlay.jewel.Utils.EffectType;
+import static cn.szzxol.pro.inlay.jewel.Utils.getIS;
 import cn.szzxol.pro.inlay.listener.Listeners;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,14 +69,13 @@ public class Inlay extends JavaPlugin {
                         }
                         amount = Integer.valueOf(args[2]);
                     }
-                    player.getWorld().dropItem(player.getLocation(), getIS(level, amount));
+                    player.getWorld().dropItem(player.getLocation(), getIS(EffectType.Damage, level, amount));
                     ItemStack ItemStack2 = new ItemStack(Material.DIAMOND_SWORD, 1);
                     ItemMeta ItemMeta2 = ItemStack2.getItemMeta();
                     List<String> lores2 = new ArrayList<>();
                     lores2.add(ChatColor.translateAlternateColorCodes('&', "&f&l○ 空镶嵌孔"));
                     ItemMeta2.setLore(lores2);
                     ItemStack2.setItemMeta(ItemMeta2);
-                    ItemStack2.setDurability((short) 1);
                     player.getWorld().dropItem(player.getLocation(), ItemStack2);
                 }
                 if (args[0].equalsIgnoreCase("punch")) {
@@ -95,19 +95,6 @@ public class Inlay extends JavaPlugin {
             }
         }
         return true;
-    }
-
-    public static ItemStack getIS(int Level, int amount) {
-        ItemStack ItemStack = new ItemStack(Material.DIAMOND, amount);
-        ItemMeta ItemMeta = ItemStack.getItemMeta();
-        ItemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&f&l钻石&d&l【可镶嵌】"));
-        List<String> lores = new ArrayList<>();
-        lores.add(ChatColor.translateAlternateColorCodes('&', "&f&l【镶嵌宝石】"));
-        lores.add(ChatColor.translateAlternateColorCodes('&', "&f&l" + getLevelSign(Level)));
-        lores.add(ChatColor.translateAlternateColorCodes('&', "&f&l伤害+" + Inlay.instance.getConfig().getDouble("Settings.DIAMOND.Level." + Level)));
-        ItemMeta.setLore(lores);
-        ItemStack.setItemMeta(ItemMeta);
-        return ItemStack;
     }
 
     public static Inlay instance;

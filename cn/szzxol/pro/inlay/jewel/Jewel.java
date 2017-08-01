@@ -1,6 +1,5 @@
 package cn.szzxol.pro.inlay.jewel;
 
-import cn.szzxol.pro.inlay.Inlay;
 import static cn.szzxol.pro.inlay.jewel.Utils.getJewelLevel;
 import static cn.szzxol.pro.inlay.jewel.Utils.getJewelType;
 import java.util.List;
@@ -38,19 +37,16 @@ public class Jewel {
 
     public JewelType type;
     public int Level;
-    public double value;
     public List<String> lores;
 
     public Jewel(JewelType type, int level) {
         this.type = type;
         this.Level = level;
-        this.value = Inlay.instance.getConfig().getDouble("Settings.DIAMOND.Level." + this.Level);
     }
 
     public Jewel(ItemStack is) {
         this.type = getJewelType(is);
         this.Level = getJewelLevel(is);
-        this.value = Inlay.instance.getConfig().getDouble("Settings.DIAMOND.Level." + this.Level);
         List<String> lore = is.getItemMeta().getLore();
         lore.set(0, ChatColor.translateAlternateColorCodes('&', "&b&l● " + this.type.getName()));
         lore.set(1, "     " + lore.get(1));

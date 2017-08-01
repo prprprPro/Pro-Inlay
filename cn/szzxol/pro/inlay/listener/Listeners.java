@@ -1,11 +1,11 @@
 package cn.szzxol.pro.inlay.listener;
 
 import cn.szzxol.pro.inlay.Inlay;
-import static cn.szzxol.pro.inlay.Inlay.getIS;
 import cn.szzxol.pro.inlay.jewel.Jewel;
 import static cn.szzxol.pro.inlay.jewel.Utils.canInlay;
+import static cn.szzxol.pro.inlay.jewel.Utils.getIS;
 import static cn.szzxol.pro.inlay.jewel.Utils.getJewelLevel;
-import static cn.szzxol.pro.inlay.jewel.Utils.getJewelType;
+import static cn.szzxol.pro.inlay.jewel.Utils.getRandomEffectType;
 import static cn.szzxol.pro.inlay.jewel.Utils.isActive;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -38,6 +38,11 @@ public class Listeners implements Listener {
     public void onPrepareAnvil(PrepareAnvilEvent event) {
         AnvilInventory inv = event.getInventory();
         ItemStack is = event.getResult();
+        ItemStack isr = inv.getItem(0);
+        if (!(isr == null) && isr.getDurability() == 0) {
+            isr.setDurability((short) 1);
+            inv.setItem(0, isr);
+        }
         ItemStack jw = inv.getItem(1);
         if (jw != null && isActive(jw)) {
             if (canInlay(is)) {
@@ -46,7 +51,6 @@ public class Listeners implements Listener {
                 List<String> lores = ItemMeta.getLore();
                 ItemMeta.setLore(insertLore(lores, j));
                 is.setItemMeta(ItemMeta);
-                is.setDurability((short) 1);
                 event.setResult(is);
             }
         }
@@ -82,7 +86,7 @@ public class Listeners implements Listener {
             if (index < chance) {
                 int level = getRandom(r, Inlay.instance.getConfig().getInt("Settings.DIAMOND.Multiple"), 0);
                 Location l = event.getBlock().getLocation();
-                ItemStack is = getIS(level, 1);
+                ItemStack is = getIS(getRandomEffectType(), level, 1);
                 l.getWorld().dropItem(l, is);
                 sendmessage1(player, is);
             }
