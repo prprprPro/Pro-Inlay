@@ -55,7 +55,7 @@ public class Inlay extends JavaPlugin {
                         } catch (Exception e) {
                             level = 1;
                         }
-                        if (Integer.valueOf(args[1]) < 1) {
+                        if (Integer.valueOf(args[1]) < 1 || Integer.valueOf(args[1]) > 10) {
                             level = 1;
                         }
                         level = Integer.valueOf(args[1]);
