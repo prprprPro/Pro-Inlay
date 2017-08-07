@@ -66,9 +66,11 @@ public class Utils {
 
     public static boolean canInlay(ItemStack is) {
         if (is.getType() == Material.DIAMOND_SWORD) {
-            if (is.getItemMeta().getLore() != null) {
-                if (!is.getItemMeta().getLore().isEmpty()) {
-                    for (int i = 0; i < is.getItemMeta().getLore().size(); i++) {
+            List<String> list = is.getItemMeta().getLore();
+            if (list != null) {
+                if (!list.isEmpty()) {
+                    for (int i = 0; i < list.size(); i++) {
+                        String x = list.get(i);
                         if (is.getItemMeta().getLore().get(i).contains("○ 空镶嵌孔")) {
                             return true;
                         }
@@ -77,6 +79,24 @@ public class Utils {
             }
         }
         return false;
+    }
+
+    public static int getInlayAmount(ItemStack is) {
+        int count = 0;
+        if (is.getType() == Material.DIAMOND_SWORD) {
+            List<String> list = is.getItemMeta().getLore();
+            if (list != null) {
+                if (!list.isEmpty()) {
+                    for (int i = 0; i < list.size(); i++) {
+                        String x = list.get(i);
+                        if (x.contains("○") || x.contains("●")) {
+                            count++;
+                        }
+                    }
+                }
+            }
+        }
+        return count;
     }
 
     public static Jewel.JewelType getJewelType(ItemStack is) {

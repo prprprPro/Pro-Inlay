@@ -1,8 +1,10 @@
 package cn.szzxol.pro.inlay;
 
+import static cn.szzxol.pro.inlay.jewel.Jewel.MaxLevel;
 import cn.szzxol.pro.inlay.jewel.Utils.EffectType;
 import static cn.szzxol.pro.inlay.jewel.Utils.getIS;
 import cn.szzxol.pro.inlay.listener.Listeners;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.ChatColor;
@@ -21,10 +23,17 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class Inlay extends JavaPlugin {
 
+    public static String version = "1.0.3";
+
     @Override
     public void onEnable() {
         getLogger().info("插件正在加载...");
         this.saveDefaultConfig();
+        if (!this.getConfig().getString("Version").equals(version)) {
+            File Config = new File(Inlay.instance.getDataFolder(), "config.yml");
+            Config.delete();
+            this.saveDefaultConfig();
+        }
         FurnaceRecipe recipe = new FurnaceRecipe(new ItemStack(Material.DIAMOND_SWORD), Material.DIAMOND_SWORD);
         getServer().addRecipe(recipe);
         getServer().getPluginManager().registerEvents(new Listeners(), this);
@@ -45,6 +54,7 @@ public class Inlay extends JavaPlugin {
                     return true;
                 }
                 if (args.length == 0) {
+                    player.sendMessage((new StringBuilder()).append(ChatColor.GOLD).append("无效指令...").toString());
                     return true;
                 }
                 if (args[0].equalsIgnoreCase("get")) {
@@ -55,7 +65,7 @@ public class Inlay extends JavaPlugin {
                         } catch (Exception e) {
                             level = 1;
                         }
-                        if (Integer.valueOf(args[1]) < 1 || Integer.valueOf(args[1]) > 10) {
+                        if (Integer.valueOf(args[1]) < 1 || Integer.valueOf(args[1]) > MaxLevel) {
                             level = 1;
                         }
                         level = Integer.valueOf(args[1]);
@@ -70,22 +80,21 @@ public class Inlay extends JavaPlugin {
                         amount = Integer.valueOf(args[2]);
                     }
                     player.getWorld().dropItem(player.getLocation(), getIS(EffectType.Damage, level, amount));
-                    ItemStack ItemStack2 = new ItemStack(Material.DIAMOND_SWORD, 1);
-                    ItemMeta ItemMeta2 = ItemStack2.getItemMeta();
-                    List<String> lores2 = new ArrayList<>();
-                    lores2.add(ChatColor.translateAlternateColorCodes('&', "&f&l○ 空镶嵌孔"));
-                    ItemMeta2.setLore(lores2);
-                    ItemStack2.setItemMeta(ItemMeta2);
-                    player.getWorld().dropItem(player.getLocation(), ItemStack2);
+                    player.sendMessage((new StringBuilder()).append(ChatColor.GOLD).append("物品已给予...").toString());
                 }
                 if (args[0].equalsIgnoreCase("punch")) {
                     ItemStack ItemStack = player.getItemInHand();
-                    ItemMeta ItemMeta = ItemStack.getItemMeta();
-                    List<String> lores = ItemMeta.getLore() == null ? new ArrayList<>() : ItemMeta.getLore();
-                    lores.add(ChatColor.translateAlternateColorCodes('&', "&f&l○ 空镶嵌孔"));
-                    ItemMeta.setLore(lores);
-                    ItemStack.setItemMeta(ItemMeta);
-                    player.setItemInHand(ItemStack);
+                    if (ItemStack.getType() == Material.DIAMOND_SWORD) {
+                        ItemMeta ItemMeta = ItemStack.getItemMeta();
+                        List<String> lores = ItemMeta.getLore() == null ? new ArrayList<>() : ItemMeta.getLore();
+                        lores.add(ChatColor.translateAlternateColorCodes('&', "&f&l○ 空镶嵌孔"));
+                        ItemMeta.setLore(lores);
+                        ItemStack.setItemMeta(ItemMeta);
+                        player.setItemInHand(ItemStack);
+                        player.sendMessage((new StringBuilder()).append(ChatColor.GOLD).append("打孔成功...").toString());
+                    } else {
+                        player.sendMessage((new StringBuilder()).append(ChatColor.GOLD).append("当前物品无法打孔...").toString());
+                    }
                 }
                 if (args[0].equalsIgnoreCase("reload")) {
                     player.sendMessage((new StringBuilder()).append(ChatColor.GOLD).append("插件重载完成...").toString());

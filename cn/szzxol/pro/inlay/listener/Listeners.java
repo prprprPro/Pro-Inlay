@@ -2,8 +2,10 @@ package cn.szzxol.pro.inlay.listener;
 
 import cn.szzxol.pro.inlay.Inlay;
 import cn.szzxol.pro.inlay.jewel.Jewel;
+import static cn.szzxol.pro.inlay.jewel.Jewel.MaxLevel;
 import static cn.szzxol.pro.inlay.jewel.Utils.canInlay;
 import static cn.szzxol.pro.inlay.jewel.Utils.getIS;
+import static cn.szzxol.pro.inlay.jewel.Utils.getInlayAmount;
 import static cn.szzxol.pro.inlay.jewel.Utils.getJewelLevel;
 import static cn.szzxol.pro.inlay.jewel.Utils.getRandomEffectType;
 import static cn.szzxol.pro.inlay.jewel.Utils.isActive;
@@ -60,18 +62,22 @@ public class Listeners implements Listener {
     public void onFurnaceSmelt(FurnaceSmeltEvent event) {
         ItemStack is = event.getSource();
         if (is.getType() == Material.DIAMOND_SWORD) {
-            Random r = new java.util.Random();
-            int index = r.nextInt(100);
-            int chance = Inlay.instance.getConfig().getInt("Settings.Punch.Chance");
-            if (index < chance) {
-                ItemMeta ItemMeta = is.getItemMeta();
-                List<String> lores = ItemMeta.getLore() == null ? new LinkedList<>() : ItemMeta.getLore();
-                lores.add(ChatColor.translateAlternateColorCodes('&', "&f&l○ 空镶嵌孔"));
-                ItemMeta.setLore(lores);
-                is.setItemMeta(ItemMeta);
-                event.setResult(is);
+            if (getInlayAmount(is) < Inlay.instance.getConfig().getInt("Settings.Punch.MaxAmount")) {
+                Random r = new java.util.Random();
+                int index = r.nextInt(100);
+                int chance = Inlay.instance.getConfig().getInt("Settings.Punch.Chance");
+                if (index < chance) {
+                    ItemMeta ItemMeta = is.getItemMeta();
+                    List<String> lores = ItemMeta.getLore() == null ? new LinkedList<>() : ItemMeta.getLore();
+                    lores.add(ChatColor.translateAlternateColorCodes('&', "&f&l○ 空镶嵌孔"));
+                    ItemMeta.setLore(lores);
+                    is.setItemMeta(ItemMeta);
+                    event.setResult(is);
+                } else if (Inlay.instance.getConfig().getBoolean("Settings.Punch.DisapperOnFail")) {
+                    event.setResult(null);
+                }
             } else {
-                event.setResult(null);
+                event.setResult(is);
             }
         }
     }
@@ -95,9 +101,9 @@ public class Listeners implements Listener {
 
     public static int getRandom(Random r, int Multiple, int adjust) {
         double d = r.nextDouble();
-        long l = (long) (d * (Math.pow(Multiple, 10 + adjust) - Multiple)) + Multiple;
+        long l = (long) (d * (Math.pow(Multiple, MaxLevel + adjust) - Multiple)) + Multiple;
         int n = (int) Math.floor(Math.log(l) / Math.log(Multiple));
-        return 10 + adjust - n;
+        return MaxLevel + adjust - n;
     }
 
     public static void sendmessage1(Player player, ItemStack is) {
