@@ -1,6 +1,5 @@
 package cn.szzxol.pro.inlay;
 
-import static cn.szzxol.pro.inlay.jewel.Jewel.MaxLevel;
 import cn.szzxol.pro.inlay.jewel.Utils.EffectType;
 import static cn.szzxol.pro.inlay.jewel.Utils.getIS;
 import cn.szzxol.pro.inlay.listener.Listeners;
@@ -24,6 +23,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Inlay extends JavaPlugin {
 
     public static String version = "1.0.3";
+    public static String sign_Full = "★";
+    public static String sign_Null = "☆";
+    public static int MaxLevel = 10;
 
     @Override
     public void onEnable() {
@@ -34,9 +36,11 @@ public class Inlay extends JavaPlugin {
             Config.delete();
             this.saveDefaultConfig();
         }
-        FurnaceRecipe recipe = new FurnaceRecipe(new ItemStack(Material.DIAMOND_SWORD), Material.DIAMOND_SWORD);
-        getServer().addRecipe(recipe);
+        getServer().addRecipe(new FurnaceRecipe(new ItemStack(Material.DIAMOND_SWORD), Material.DIAMOND_SWORD));
         getServer().getPluginManager().registerEvents(new Listeners(), this);
+        sign_Full = this.getConfig().getString("Settings.DIAMOND.Sign.Full");
+        sign_Null = this.getConfig().getString("Settings.DIAMOND.Sign.Null");
+        MaxLevel = this.getConfig().getInt("Settings.DIAMOND.Level.MaxLevel");
         getLogger().info("插件加载完成...");
     }
 
@@ -97,6 +101,9 @@ public class Inlay extends JavaPlugin {
                     }
                 }
                 if (args[0].equalsIgnoreCase("reload")) {
+                    sign_Full = this.getConfig().getString("Settings.DIAMOND.Sign.Full");
+                    sign_Null = this.getConfig().getString("Settings.DIAMOND.Sign.Null");
+                    MaxLevel = this.getConfig().getInt("Settings.DIAMOND.Level.MaxLevel");
                     player.sendMessage((new StringBuilder()).append(ChatColor.GOLD).append("插件重载完成...").toString());
                     player.sendMessage((new StringBuilder()).append(ChatColor.GOLD).append("当前宝石掉落率： ").append(this.getConfig().getInt("Settings.Drop.Chance")).append("%").toString());
                     player.sendMessage((new StringBuilder()).append(ChatColor.GOLD).append("当前打孔成功率： ").append(this.getConfig().getInt("Settings.Punch.Chance")).append("%").toString());

@@ -28,7 +28,7 @@ public class Configuration {
     public static void saveDefaultYaml(String FileName) {
         File file = new File(Inlay.instance.getDataFolder(), FileName + ".yml");
         if (file.exists()) {
-            getLogger().info("[pro-Essential] 检测到文件：" + FileName + ".yml");
+            getLogger().info("[pro-Inlay] 检测到文件：" + FileName + ".yml");
         } else {
             Inlay.instance.saveResource(FileName + ".yml", false);
         }

@@ -2,6 +2,7 @@ package cn.szzxol.pro.inlay.jewel;
 
 import cn.szzxol.pro.inlay.Inlay;
 import static cn.szzxol.pro.inlay.jewel.Jewel.getLevelSign;
+import static cn.szzxol.pro.inlay.Inlay.sign_Full;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -110,10 +111,9 @@ public class Utils {
 
     public static int getJewelLevel(ItemStack is) {
         String str = is.getItemMeta().getLore().get(1);
-        String des = "★";
         int count = 0, offset = 0;
-        while ((offset = str.indexOf(des, offset)) != -1) {
-            offset = offset + des.length();
+        while ((offset = str.indexOf(sign_Full, offset)) != -1) {
+            offset = offset + sign_Full.length();
             count++;
         }
         return count;

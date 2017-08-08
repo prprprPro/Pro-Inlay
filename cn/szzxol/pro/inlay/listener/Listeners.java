@@ -1,8 +1,8 @@
 package cn.szzxol.pro.inlay.listener;
 
 import cn.szzxol.pro.inlay.Inlay;
+import static cn.szzxol.pro.inlay.Inlay.MaxLevel;
 import cn.szzxol.pro.inlay.jewel.Jewel;
-import static cn.szzxol.pro.inlay.jewel.Jewel.MaxLevel;
 import static cn.szzxol.pro.inlay.jewel.Utils.canInlay;
 import static cn.szzxol.pro.inlay.jewel.Utils.getIS;
 import static cn.szzxol.pro.inlay.jewel.Utils.getInlayAmount;

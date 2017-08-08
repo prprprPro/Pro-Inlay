@@ -1,5 +1,8 @@
 package cn.szzxol.pro.inlay.jewel;
 
+import static cn.szzxol.pro.inlay.Inlay.MaxLevel;
+import static cn.szzxol.pro.inlay.Inlay.sign_Full;
+import static cn.szzxol.pro.inlay.Inlay.sign_Null;
 import static cn.szzxol.pro.inlay.jewel.Utils.getJewelLevel;
 import static cn.szzxol.pro.inlay.jewel.Utils.getJewelType;
 import java.util.List;
@@ -12,6 +15,8 @@ import org.bukkit.inventory.ItemStack;
  * @author I_promise
  */
 public class Jewel {
+
+    
 
     public enum JewelType {
         DIAMOND(Material.DIAMOND, "钻石");
@@ -32,8 +37,6 @@ public class Jewel {
             return this.Name;
         }
     }
-
-    public static int MaxLevel = 10;
 
     public JewelType type;
     public int Level;
@@ -57,7 +60,7 @@ public class Jewel {
     public String getLevelSign() {
         String Sign = "";
         for (int i = 1; i <= MaxLevel; i++) {
-            Sign += i <= this.Level ? "★" : "☆";
+            Sign += i <= this.Level ? sign_Full : sign_Null;
         }
         return Sign;
     }
@@ -65,7 +68,7 @@ public class Jewel {
     public static String getLevelSign(int level) {
         String Sign = "";
         for (int i = 1; i <= MaxLevel; i++) {
-            Sign += i <= level ? "★" : "☆";
+            Sign += i <= level ? sign_Full : sign_Null;
         }
         return Sign;
     }
